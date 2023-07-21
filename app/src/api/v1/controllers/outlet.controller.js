@@ -3,6 +3,9 @@ const { success, badRequest, unknownError } = require("../helpers/response_helpe
 
 exports.addNewOutlet = async (req, res) => {
     try {
+        if (req.file) {
+            req.body.outletImage = req.file
+        }
         const { status, message, data } = await addOutlet(req.body, req.headers.authorization);
         return status ? success(res, message) : badRequest(res, message)
     } catch (error) {

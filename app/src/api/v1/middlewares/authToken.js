@@ -97,19 +97,19 @@ function authenticateGuest(req, res, next) {
       const decode = parseJwt(authHeader);
       const token = authHeader.split(" ")[1];
       if (decode.role == 3) {
-        jwt.verify(token, adminPublicKEY, verifyOption);
+        verifyToken(token, adminPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 2) {
-        jwt.verify(token, sellerPublicKEY, verifyOption);
+        verifyToken(token, sellerPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 1) {
-        jwt.verify(token, partnerPublicKEY, verifyOption);
+        verifyToken(token, partnerPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 0) {
-        jwt.verify(token, userPublicKEY, verifyOption);
+        verifyToken(token, userPublicKEY, verifyOption, decode, res)
         next();
       } else {
-        jwt.verify(token, guestPublicKEY, verifyOption);
+        verifyToken(token, guestPublicKEY, verifyOption, decode, res)
         next();
       }
     } catch (error) {
@@ -128,16 +128,16 @@ function authenticateUser(req, res, next) {
       const decode = parseJwt(authHeader);
       const token = authHeader.split(" ")[1];
       if (decode.role == 3) {
-        jwt.verify(token, adminPublicKEY, verifyOption);
+        verifyToken(token, adminPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 2) {
-        jwt.verify(token, sellerPublicKEY, verifyOption);
+        verifyToken(token, sellerPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 1) {
-        jwt.verify(token, partnerPublicKEY, verifyOption);
+        verifyToken(token, partnerPublicKEY, verifyOption, decode, res)
         next();
       } else {
-        jwt.verify(token, userPublicKEY, verifyOption);
+        verifyToken(token, userPublicKEY, verifyOption, decode, res)
         next();
       }
     } catch (error) {
@@ -155,13 +155,15 @@ function authenticatePartner(req, res, next) {
       const decode = parseJwt(authHeader);
       const token = authHeader.split(" ")[1];
       if (decode.role == 3) {
-        jwt.verify(token, adminPublicKEY, verifyOption);
+        verifyToken(token, adminPublicKEY, verifyOption, decode, res)
+
         next();
       } else if (decode.role == 2) {
-        jwt.verify(token, sellerPublicKEY, verifyOption);
+        verifyToken(token, sellerPublicKEY, verifyOption, decode, res)
+
         next();
       } else {
-        jwt.verify(token, partnerPublicKEY, verifyOption);
+        verifyToken(token, partnerPublicKEY, verifyOption, decode, res)
         next();
       }
     } catch (error) {
@@ -177,16 +179,15 @@ function authenticateSeller(req, res, next) {
   if (authHeader) {
     try {
       const decode = parseJwt(authHeader)
-
       const token = authHeader.split(" ")[1];
       if (decode.role == 3) {
-        jwt.verify(token, adminPublicKEY, verifyOption);
+        verifyToken(token, adminPublicKEY, verifyOption, decode, res)
         next();
       } else if (decode.role == 2) {
-        jwt.verify(token, sellerPublicKEY, verifyOption);
+        verifyToken(token, sellerPublicKEY, verifyOption, decode, res)
         next();
       } else {
-        jwt.verify(token, sellerPublicKEY, verifyOption);
+        verifyToken(token, sellerPublicKEY, verifyOption, decode, res)
         next();
       }
     } catch (error) {
@@ -199,12 +200,14 @@ function authenticateSeller(req, res, next) {
 
 function authenticateAdmin(req, res, next) {
   let authHeader = req.headers.authorization;
+  const decode = parseJwt(authHeader)
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     try {
-      jwt.verify(token, adminPublicKEY, verifyOption);
+      verifyToken(token, adminPublicKEY, verifyOption, decode, res)
       next();
     } catch (err) {
+      console.log(err);
       unauthorized(res, "invalid token");
     }
   } else {
@@ -236,6 +239,49 @@ async function checkEncryption(data, encryptData) {
   const check = await bcrypt.compare(data, encryptData);
   return check;
 }
+
+
+function verifyToken(token, publicKey, verifyOption, decode, res) {
+  try {
+    jwt.verify(token, publicKey, verifyOption);
+    let shouldChange = false
+    const dateDiff = dateDifference(decode.exp)
+    if (dateDiff <= 2) {
+      token = generateTokenFromRole(decode.role, decode)
+      shouldChange = true
+    }
+    res.tokenInfo = { token, shouldChange }
+    return
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message)
+  }
+}
+
+function generateTokenFromRole(role) {
+  switch (role) {
+    case 3:
+      return generateAdminToken(userData)
+    case 1:
+      return generatePartnerToken(userData)
+    case 2:
+      return generateSellerToken(userData)
+    case 0:
+      return generateUserToken(userData)
+    default:
+      return generateGuestToken()
+  }
+
+}
+
+function dateDifference(expireDate) {
+  let tokenDate = new Date(expireDate * 1000)
+  let todayDate = new Date()
+  let difference = tokenDate.getTime() - todayDate.getTime()
+  let dayDifference = difference / (1000 * 60 * 60 * 24);
+  return dayDifference
+}
+
 
 module.exports = {
   generateSellerToken,

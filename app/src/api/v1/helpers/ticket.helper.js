@@ -1,3 +1,4 @@
+const moment = require("moment/moment");
 const { responseFormater } = require("../formatter/response.format");
 const { ticketFormatter } = require("../formatter/ticket.format");
 const ticketModel = require("../models/ticket.model");
@@ -19,8 +20,17 @@ exports.createSupportTicket = async (tokenData, ticketData, priority) => {
 exports.getSupportTickets = async (status, userId) => {
     try {
         const query = userId ? { userId, status } : { status }
-        const tickets = await ticketModel.find(query).sort({_id:-1}).select("-_id -createdAt -updatedAt  -__v")
-        return tickets[0] ? responseFormater(true, "ticket list", tickets) : responseFormater(false, "No ticket found",)
+        const tickets = await ticketModel.find(query).sort({ _id: -1 }).select("-_id -updatedAt  -__v").lean()
+        let newList = tickets.map((ticket) => {
+            ticket.createdAt = moment(ticket.createdAt).calendar(null, {
+                sameDay: '[Today] h:m A',
+                lastDay: '[Yesterday] h:m A',
+                lastWeek: '[Last] dddd h:m A',
+                sameElse: 'MMM DD, YYYY h:m A'
+            });
+            return ticket
+        })
+        return newList[0] ? responseFormater(true, "ticket list", newList) : responseFormater(false, "No ticket found",)
     } catch (error) {
         console.log(error.message);
         return responseFormater(false, error.message,)

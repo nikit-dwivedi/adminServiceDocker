@@ -8,7 +8,7 @@ process.env.TZ = 'Asia/Calcutta';
 
 
 
-const port = process.env.APPID;
+const port = process.env.PORT || 4006;
 const IP = process.env.IP || '127.0.0.1';
 const server = http.createServer(app);
 
