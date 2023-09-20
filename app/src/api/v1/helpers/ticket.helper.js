@@ -41,7 +41,7 @@ exports.getSupportTickets = async (status, userId) => {
 // Get a support ticket by ID
 exports.getSupportTicketById = async (ticketId) => {
     try {
-        const ticket = await ticketModel.findOne({ ticketId }).select("-_id -createdAt -updatedAt  -__v")
+        const ticket = await ticketModel.findOne({ ticketId }).select("-_id -createdAt -updatedAt  -__v").lean()
         return ticket ? responseFormater(true, "ticket detail", ticket) : responseFormater(false, "No ticket found",)
     } catch (error) {
         console.log(error.message);

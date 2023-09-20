@@ -3,7 +3,7 @@ const { responseFormater } = require('../formatter/response.format');
 const authModel = require('../models/auth.model');
 const sellerModel = require('../models/seller.model');
 const { get, post } = require('../services/axios.service');
-const { onboardSellerUrl, addAuthUrl, getAgentSellerUrl, yeloUrl, getAllSellerUrl, getSellerInfoUrl } = require('../urls/userService.url');
+const { onboardSellerUrl, addAuthUrl, getAgentSellerUrl, yeloUrl, getAllSellerUrl, getSellerInfoUrl, getAllPaginatedSellerUrl } = require('../urls/userService.url');
 
 exports.addSellerAuth = async (bodyData, token) => {
     try {
@@ -45,6 +45,18 @@ exports.getAllAgentSeller = async (token) => {
     try {
         const header = { "Authorization": token }
         const url = getAgentSellerUrl()
+        const { status: axiosStatus, message, data } = await get(url, header);
+        return axiosStatus ? responseFormater(true, message, data) : responseFormater(false, message)
+    } catch (error) {
+        return { status: false, message: "something went wrong", data: error }
+    }
+}
+
+exports.getPaginatedSeller = async (token,page, limit) => {
+    try {
+        const header = { "Authorization": token }
+     
+        const url = getAllPaginatedSellerUrl(page, limit)
         const { status: axiosStatus, message, data } = await get(url, header);
         return axiosStatus ? responseFormater(true, message, data) : responseFormater(false, message)
     } catch (error) {

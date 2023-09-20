@@ -1,6 +1,6 @@
 const { responseFormater } = require("../formatter/response.format")
 const { post, get } = require("../services/axios.service")
-const { addOutletUrl, allOutletUrl, outletByOutletIdUrl, sellerOutletUrl, outletStatUrl } = require("../urls/inventoryService.url")
+const { addOutletUrl, allOutletUrl, outletByOutletIdUrl, sellerOutletUrl, outletStatUrl, allOutletPaginationUrl } = require("../urls/inventoryService.url")
 
 exports.addOutlet = async (bodyData, token) => {
     try {
@@ -14,7 +14,18 @@ exports.addOutlet = async (bodyData, token) => {
 }
 exports.allOutlet = async (token) => {
     try {
+        console.log(token);
         const url = allOutletUrl()
+        const header = { Authorization: token }
+        const { status, message, data } = await get(url, header)
+        return responseFormater(status, message, data)
+    } catch (error) {
+        return responseFormater(false, error.message)
+    }
+}
+exports.allOutletPaginated = async (token, page, limit) => {
+    try {
+        const url = allOutletPaginationUrl(page, limit)
         const header = { Authorization: token }
         const { status, message, data } = await get(url, header)
         return responseFormater(status, message, data)

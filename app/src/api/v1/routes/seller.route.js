@@ -10,6 +10,8 @@ router.post('/auth', sellerAddCheck, sellerController.addNewAuth);
 router.post('/onboard', sellerAddCheck, sellerController.onboardSeller);
 router.get('/agent', sellerViewCheck, sellerController.getSellers);
 router.get('/all', sellerViewCheck, sellerController.AllSellers);
+router.get('/all/paginated', sellerViewCheck, sellerController.paginatedSellers);
+
 router.post('/info', sellerViewCheck, sellerController.sellerInfo);
 router.post('/yelo', sellerController.yeloSync)
 

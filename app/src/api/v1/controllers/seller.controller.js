@@ -1,6 +1,6 @@
 const { changeUserType } = require("../helpers/auth.helper");
 const { success, badRequest, unknownError } = require("../helpers/response_helper");
-const { addSellerDetails, getAllSeller, sellerBySellerId, changeVerifyStatus, addSellerAuth, addYeloId, getAllAgentSeller, getSellerInfo } = require("../helpers/seller.helper");
+const { addSellerDetails, getAllSeller, sellerBySellerId, changeVerifyStatus, addSellerAuth, addYeloId, getAllAgentSeller, getSellerInfo, getPaginatedSeller } = require("../helpers/seller.helper");
 const { parseJwt } = require("../middlewares/authToken");
 
 
@@ -46,10 +46,19 @@ exports.AllSellers = async (req, res) => {
         return unknownError(res, "unknown error")
     }
 }
+exports.paginatedSellers = async (req, res) => {
+    try {
+        const { page, limit } = req.query
+        const { status, message, data } = await getPaginatedSeller(req.headers.authorization, page, limit);
+        return status ? success(res, message, data) : badRequest(res, message, data);
+    } catch (error) {
+        return unknownError(res, "unknown error")
+    }
+}
 exports.sellerInfo = async (req, res) => {
     try {
         const { sellerId } = req.body
-        const { status, message, data } = await getSellerInfo(sellerId,req.headers.authorization);
+        const { status, message, data } = await getSellerInfo(sellerId, req.headers.authorization);
         return status ? success(res, message, data) : badRequest(res, message, data);
     } catch (error) {
         return unknownError(res, "unknown error")

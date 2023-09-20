@@ -2,6 +2,7 @@ const { createSupportTicket, getSupportTicketById, updateSupportTicketStatus, as
 const { getOrderDetails } = require("../helpers/order.helpers")
 const { parseJwt } = require("../middlewares/authToken")
 const { badRequest, success, unknownError } = require("../helpers/response_helper")
+const { getSellerInfo } = require("../helpers/seller.helper")
 
 exports.addNewTicket = async (req, res) => {
     try {
@@ -95,6 +96,12 @@ exports.getTicketDetails = async (req, res) => {
     try {
         const { ticketId } = req.params
         const { status, message, data } = await getSupportTicketById(ticketId)
+        if (!status) {
+            return badRequest(res, message)
+        }
+        let orderDetails = await getOrderDetails(data.orderId)
+        data.orderDetails = orderDetails?.data
+        console.log(orderDetails);
         return status ? success(res, message, data) : badRequest(res, message)
     } catch (error) {
         return unknownError(res, error.message)

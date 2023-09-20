@@ -1,25 +1,51 @@
-version : '3'
+version: '3'
 
 services:
-    lb:
-        image: haproxy
-        ports:
-            - "8087:8080"
-        volumes:
-            - ./haproxy:/usr/local/etc/haproxy
-    adminservice1:
-        image: adminservice
-        environment:
-            - APPID=1111
-    adminservice2:
-        image: adminservice
-        environment:
-            - APPID=2222
-    adminservice3:
-        image: adminservice
-        environment:
-            - APPID=3333
-    adminservice4:
-        image: adminservice
-        environment:
-            - APPID=4444
+  lb:
+    image: haproxy
+    ports:
+      - "8087:8080"
+    networks:
+      marketplace:
+        ipv4_address: 172.25.0.2 # Assign a static IP address to the lb service
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy
+
+  adminservice1:
+    image: adminservice
+    environment:
+      - APPID=1111
+    networks:
+      marketplace:
+        ipv4_address: 172.25.0.3 # Assign a static IP address to adminservice1
+
+  adminservice2:
+    image: adminservice
+    environment:
+      - APPID=2222
+    networks:
+      marketplace:
+        ipv4_address: 172.25.0.4 # Assign a static IP address to adminservice2
+
+  adminservice3:
+    image: adminservice
+    environment:
+      - APPID=3333
+    networks:
+      marketplace:
+        ipv4_address: 172.25.0.5 # Assign a static IP address to adminservice3
+
+  adminservice4:
+    image: adminservice
+    environment:
+      - APPID=4444
+    networks:
+      marketplace:
+        ipv4_address: 172.25.0.6 # Assign a static IP address to adminservice4
+
+networks:
+  marketplace:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/16 # Define a subnet for your custom network named "marketplace"

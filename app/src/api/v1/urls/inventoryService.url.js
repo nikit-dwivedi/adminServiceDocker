@@ -14,6 +14,9 @@ exports.sellerOutletUrl = (sellerId, mode = 2) => {
 exports.allOutletUrl = () => {
     return `${baseUrlV1Prod}/outlet/all`
 }
+exports.allOutletPaginationUrl = (page, limit) => {
+    return `${baseUrlV1Prod}/outlet/all/paginated?page=${page}&limit=${limit}`
+}
 exports.changeOutletStatusUrl = (outletId) => {
     return `${baseUrlV1Prod}/outlet/status/${outletId}`
 }

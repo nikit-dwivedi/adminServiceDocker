@@ -1,4 +1,4 @@
-const { addOutlet, allOutlet, outletDetail, sellerOutlet } = require("../helpers/outlet.helper");
+const { addOutlet, allOutlet, outletDetail, sellerOutlet, allOutletPaginated } = require("../helpers/outlet.helper");
 const { success, badRequest, unknownError } = require("../helpers/response_helper");
 
 exports.addNewOutlet = async (req, res) => {
@@ -14,7 +14,16 @@ exports.addNewOutlet = async (req, res) => {
 }
 exports.getAllOutlet = async (req, res) => {
     try {
-        const { status, message, data } = await allOutlet(req.body, req.headers.authorization);
+        const { status, message, data } = await allOutlet(req.headers.authorization);
+        return status ? success(res, message, data) : badRequest(res, message)
+    } catch (error) {
+        unknownError(res, error);
+    }
+}
+exports.getAllPaginatedOutlet = async (req, res) => {
+    try {
+        const { page, limit } = req.query
+        const { status, message, data } = await allOutletPaginated(req.headers.authorization,page, limit);
         return status ? success(res, message, data) : badRequest(res, message)
     } catch (error) {
         unknownError(res, error);

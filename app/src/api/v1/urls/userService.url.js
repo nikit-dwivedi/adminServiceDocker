@@ -11,6 +11,9 @@ exports.onboardSellerUrl = () => {
 exports.getAllSellerUrl = () => {
     return `${baseUrlV1Prod}/seller/all`
 }
+exports.getAllPaginatedSellerUrl = (page,limit) => {
+    return `${baseUrlV1Prod}/seller/all/paginated?page=${page}&limit=${limit}`
+}
 exports.getSellerInfoUrl = (sellerId) => {
     return `${baseUrlV1Prod}/seller/info?searchId=${sellerId}`
 }

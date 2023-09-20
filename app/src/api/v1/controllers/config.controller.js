@@ -4,7 +4,7 @@ const { success, unknownError, badRequest } = require("../helpers/response_helpe
 
 exports.version = async (req, res) => {
     try {
-        return success(res, "app version", 7.0)
+        return success(res, "app version", 15.0)
     } catch (error) {
         return unknownError(res, error.message)
     }
