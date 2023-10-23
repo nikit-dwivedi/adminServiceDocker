@@ -1,7 +1,6 @@
 const { sellerFormatter } = require('../formatter/auth.format');
 const { responseFormater } = require('../formatter/response.format');
 const authModel = require('../models/auth.model');
-const sellerModel = require('../models/seller.model');
 const { get, post } = require('../services/axios.service');
 const { onboardSellerUrl, addAuthUrl, getAgentSellerUrl, yeloUrl, getAllSellerUrl, getSellerInfoUrl, getAllPaginatedSellerUrl } = require('../urls/userService.url');
 
