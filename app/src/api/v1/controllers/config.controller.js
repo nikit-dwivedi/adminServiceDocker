@@ -43,6 +43,7 @@ exports.getConfigDetails = async (req, res) => {
 exports.testUrl = async () => {
     try {
         const data = req.file
+        console.log(data);
         return success(res, "message", data)
     } catch (error) {
         return unknownError(res, error.message)
