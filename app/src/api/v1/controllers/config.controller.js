@@ -40,7 +40,7 @@ exports.getConfigDetails = async (req, res) => {
     }
 }
 
-exports.testUrl = async () => {
+exports.testUrl = async (req,res) => {
     try {
         const data = req.file
         console.log(data);
