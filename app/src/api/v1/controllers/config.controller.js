@@ -23,7 +23,8 @@ exports.stat = async (req, res) => {
 
 exports.changeConfig = async (req, res) => {
     try {
-        const { status, message, data } = await updateConfig(req.body)
+        const token = req.headers.authorization
+        const { status, message, data } = await updateConfig(req.body, token)
         return status ? success(res, message, data) : badRequest(res, message)
     } catch (error) {
         return unknownError(res, error.message)

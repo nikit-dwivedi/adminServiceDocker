@@ -32,3 +32,6 @@ exports.outletDiscountUrl = (outletId) => {
 exports.outletStatUrl = () => {
     return `${baseUrlV1Prod}/outlet/stat`
 }
+exports.closeAllOutletUrl = () => {
+    return `${baseUrlV1Prod}/outlet/close`
+}
