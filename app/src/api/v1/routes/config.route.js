@@ -9,6 +9,6 @@ router.post('/', authenticateAdmin, changeConfig)
 router.get('/', getConfigDetails)
 router.get('/version', version)
 router.get('/stat', stat)
-router.get('/test',uploads.single("filename"),testUrl)
+router.post('/test',uploads.single("filename"),testUrl)
 
 module.exports = router;
