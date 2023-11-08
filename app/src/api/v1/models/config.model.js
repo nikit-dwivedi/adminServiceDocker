@@ -30,6 +30,10 @@ const configSchema = new Schema({
         type: String,
         enum: ["razorpay", "cashfree", "airpay"],
         required: true
+    },
+    startBannerUrl:{
+        type:String,
+        required: true
     }
 })
 

@@ -5,7 +5,7 @@ const { closeAllOutletUrl } = require('../urls/inventoryService.url');
 
 exports.updateConfig = async (updateData,token) => {
     try {
-        const { customerAppVersion, merchantAppVersion, partnerAppVersion, marketPlaceStatus, databaseVersion, apiVersion, paymentGateway, ...garbage } = updateData
+        const { customerAppVersion, merchantAppVersion, partnerAppVersion, marketPlaceStatus, databaseVersion, apiVersion, paymentGateway,startBannerUrl, ...garbage } = updateData
         if (Object.keys(garbage)[0]) {
             return responseFormater(false, "Invalid field")
         }

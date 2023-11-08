@@ -2,6 +2,7 @@ const { updateConfig, getConfig } = require("../helpers/config.helper")
 const { orderStat } = require("../helpers/order.helpers")
 const { getOutletStat } = require("../helpers/outlet.helper")
 const { success, unknownError, badRequest } = require("../helpers/response_helper")
+const { imageUpload } = require("../services/image.service")
 
 exports.version = async (req, res) => {
     try {
@@ -24,6 +25,9 @@ exports.stat = async (req, res) => {
 exports.changeConfig = async (req, res) => {
     try {
         const token = req.headers.authorization
+        if (req.file) {
+            req.body.startBannerUrl =  await imageUpload(req.file, "banner")
+        }
         const { status, message, data } = await updateConfig(req.body, token)
         return status ? success(res, message, data) : badRequest(res, message)
     } catch (error) {
@@ -40,12 +44,3 @@ exports.getConfigDetails = async (req, res) => {
     }
 }
 
-exports.testUrl = async (req,res) => {
-    try {
-        const data = req.file
-        console.log(data);
-        return success(res, "message", data)
-    } catch (error) {
-        return unknownError(res, error.message)
-    }
-}
